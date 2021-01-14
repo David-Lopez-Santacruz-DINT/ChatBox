@@ -1,0 +1,202 @@
+﻿<Window x:Class="ChatBox.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChatBox"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="599" Width="400"
+        MinHeight="599"
+        MinWidth="400">
+
+    <!-- ESTILACO ********************************* -->
+    <Window.Resources>
+        
+        <!-- Imagen del botón para mandar mensaje -->
+        <Style TargetType="Image" x:Key="iconosToolBar">
+            <Setter Property="Width" Value="30"/>
+        </Style>
+        
+        <!-- PLANTILLA LIST BOX -->
+        <DataTemplate DataType="{x:Type local:Usuario}">
+
+            <Border BorderBrush="Black" BorderThickness="2" CornerRadius="3">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <Image Source="{Binding Imagen}" Style="{DynamicResource iconosToolBar}"/>
+                        <TextBlock Text="{Binding NombreUsuario}" x:Name="nombre_usuario"/>
+                    </StackPanel>
+                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding TextoAEnviar}"/>
+                </DockPanel>
+            </Border>
+            
+        </DataTemplate>
+        
+        <!-- COLOR FONDO Y ALINEAMIENTO -->
+        <Style x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=nombre_usuario, Path=Text}" Value="Usuario">
+                    <Setter Property="Background" Value="Green"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+    </Window.Resources>
+    
+    <!-- COMANDOS SUPER PERSONALIZADOS ********************** -->
+    <Window.CommandBindings>
+        
+        <!-- BOTON ENVIAR -->
+        <CommandBinding 
+            x:Name="botonEnviarCommandBinding"
+            Command="local:ComandosPersonalizados.Enter"
+            Executed="botonEnviarCommandBinding_Executed"
+            CanExecute="botonEnviarCommandBinding_CanExecute">
+            
+        </CommandBinding>
+
+        <!-- BOTON SALIR -->
+        <CommandBinding 
+            x:Name="botonSalirCommandBinding"
+            Command="local:ComandosPersonalizados.Exit"
+            Executed="botonSalirCommandBinding_Executed">
+            
+        </CommandBinding>
+        
+        <!-- BOTON CHECK -->
+        <CommandBinding
+            x:Name="botonCheckCommandBinding"
+            Command="local:ComandosPersonalizados.CheckInternet"
+            Executed="botonCheckCommandBinding_Executed">
+            
+        </CommandBinding>
+        
+        <!-- BOTON CONFIGURAR -->
+        <CommandBinding
+            x:Name="botonConfigurarCommandBinding"
+            Command="local:ComandosPersonalizados.Configure"
+            Executed="botonConfigurarCommandBinding_Executed">
+            
+        </CommandBinding>
+        
+    </Window.CommandBindings>
+
+    <DockPanel LastChildFill="true">
+
+        <!-- PARTE SUPERIOR I ARCHIVO HERRAMIENTAS ;) -->
+
+        <Menu DockPanel.Dock="Top">
+            
+            <!-- ARCHIVO ***************************************************** -->
+            <MenuItem Header="_Archivo">
+                
+                <MenuItem Header="_Nueva Conversación" InputGestureText="Ctrl + N">
+                    <MenuItem.Icon>
+                        <Image Source="imagenes/new.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem Header="_Guardar Conversación..." InputGestureText="Ctrl + S">
+                    <MenuItem.Icon>
+                        <Image Source="imagenes/save.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <Separator/>
+
+                <MenuItem 
+                    Header="_Salir" 
+                    InputGestureText="Ctrl + X" 
+                    Command="local:ComandosPersonalizados.Exit">
+                    <MenuItem.Icon>
+                        <Image Source="iconos/exit.ico"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+
+            <!-- HERRAMIENTAS ********************************************* -->
+            <MenuItem Header="_Herramientas">
+                
+                <MenuItem 
+                    Header="Configuración..." 
+                    InputGestureText="Ctrl + C"
+                    Command="local:ComandosPersonalizados.Configure">
+                    <MenuItem.Icon>
+                        <Image Source="iconos/config.ico"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem 
+                    Header="Comprobar Conexión" 
+                    InputGestureText="Ctrl + O"
+                    Command="local:ComandosPersonalizados.CheckInternet">
+                    <MenuItem.Icon>
+                        <Image Source="imagenes/check.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            
+        </Menu>
+        
+        <!-- PARTE SUPERIOR II ICONOS ;) ********************************* -->
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                
+                <Button>
+                    <Image Source="imagenes/new.png" Style="{DynamicResource iconosToolBar}"/>
+                </Button>
+
+                <Button>
+                    <Image Source="imagenes/save.png" Style="{DynamicResource iconosToolBar}"/>
+                </Button>
+
+                <Separator/>
+
+                <Button Command="local:ComandosPersonalizados.Configure">
+                    <Image Source="iconos/config.ico" Style="{DynamicResource iconosToolBar}"/>
+                </Button>
+
+                <Button Command="local:ComandosPersonalizados.CheckInternet">
+                    <Image Source="imagenes/check.png" Style="{DynamicResource iconosToolBar}"/>
+                </Button>
+
+                <Separator/>
+
+                <Button Command="local:ComandosPersonalizados.Exit">
+                    <Image Source="iconos/exit.ico" Style="{DynamicResource iconosToolBar}"/>
+                </Button>
+
+            </ToolBar>
+        </ToolBarTray>
+        
+        <!-- PARTE ABAJO BOX Y BUTTON -->
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border BorderBrush="Black" BorderThickness="2">
+                <TextBox x:Name="cajaTextBox"/>
+            </Border>
+            <Button
+                Grid.Column="1"
+                Command="local:ComandosPersonalizados.Enter">
+                <Image Source="imagenes/send.png" Width="33"/>
+            </Button>
+        </Grid>
+        
+        <!-- PARTE CENTRAL MOSTRAR MENSAJES -->
+        <ListBox 
+            Background="#E8E3BE"
+            x:Name="conversacionListBox"
+            ItemsSource="{Binding}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel></StackPanel>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+
+    </DockPanel>
+    
+</Window>
